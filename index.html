@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ミニノベルゲーム</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    #game {
+      width: 800px;   /* 横長 */
+      height: 450px;  /* 16:9 */
+      position: relative;
+      overflow: hidden;
+      background-color: #222;
+      font-family: sans-serif;
+    }
+    #background {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    #character {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 90%;
+    }
+    #textBox {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      padding: 1em;
+      box-sizing: border-box;
+    }
+    #choices {
+      margin-top: 0.5em;
+    }
+    .choiceBtn {
+      background: #444;
+      color: #fff;
+      border: none;
+      margin: 0.2em;
+      padding: 0.5em 1em;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+    .choiceBtn:hover {
+      background: #666;
+    }
+  </style>
+</head>
+<body>
+  <div id="game">
+    <img id="background" src="https://picsum.photos/800/450?blur=2" alt="背景">
+    <img id="character" src="https://placekitten.com/400/600" alt="キャラ">
+    <div id="textBox">
+      <div id="text"></div>
+      <div id="choices"></div>
+    </div>
+  </div>
+
+  <script>
+    const story = [
+      {
+        id: "start",
+        text: "ここは静かな図書館。あなたは誰かに声をかけられた。",
+        choices: [
+          { label: "声の方を向く", next: "scene1" },
+          { label: "無視する", next: "scene2" }
+        ]
+      },
+      {
+        id: "scene1",
+        text: "「やっと見つけたよ」",
+        choices: [
+          { label: "話を聞く", next: "end" }
+        ]
+      },
+      {
+        id: "scene2",
+        text: "あなたは本に集中した。",
+        choices: [
+          { label: "続ける", next: "end" }
+        ]
+      },
+      {
+        id: "end",
+        text: "物語はここで終わる。",
+        choices: []
+      }
+    ];
+
+    let current = "start";
+    const textEl = document.getElementById("text");
+    const choicesEl = document.getElementById("choices");
+
+    function showScene(id) {
+      const scene = story.find(s => s.id === id);
+      textEl.textContent = scene.text;
+      choicesEl.innerHTML = "";
+      scene.choices.forEach(c => {
+        const btn = document.createElement("button");
+        btn.textContent = c.label;
+        btn.className = "choiceBtn";
+        btn.onclick = () => showScene(c.next);
+        choicesEl.appendChild(btn);
+      });
+    }
+
+    showScene(current);
+  </script>
+</body>
+</html>
