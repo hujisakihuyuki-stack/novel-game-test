@@ -91,66 +91,59 @@ let step = 0;
 let firstChoice = 0;
 let secondChoice = 0;
 
-// 選択肢を押したときの処理
+// 選択肢を押したとき
 function choose(n){
+  document.getElementById('choices').innerHTML = ""; // まず選択肢消す
+
   if(step === 0){
     firstChoice = n;
     step = 1;
-    if(n === 1){
-      showSequence(["1回目の選択肢を選びました","A","A-1","A-1a"]);
-    } else {
-      showSequence(["1回目の選択肢を選びました","B","B-1","B-1a"]);
-    }
-    updateChoicesAfterStep1(n);
-  } else if(step === 2){
+    showTextThenChoices(n===1?"1回目の選択肢Aのテキスト":"1回目の選択肢Bのテキスト", step);
+    
+  } else if(step === 1){
     secondChoice = n;
-    step = 3;
-    showThirdStep(n);
-  }
-}
-
-// 1回目の選択後に2回目の選択肢を表示
-function updateChoicesAfterStep1(n){
-  setTimeout(() => {
-    if(n === 1){
-      updateChoices("A-1","A-2");
+    step = 2;
+    if(firstChoice === 1){
+      showTextThenChoices(n===1?"A-1のテキスト":"A-2のテキスト", step);
     } else {
-      updateChoices("B-1","B-2");
+      showTextThenChoices(n===1?"B-1のテキスト":"B-2のテキスト", step);
     }
-    step = 2; // 次は2回目選択
-  }, 3000); // 3秒待って選択肢表示
-}
-
-// 3回目（最終ゴール）処理
-function showThirdStep(n){
-  let result = "";
-  if(firstChoice === 1 && secondChoice === 1){
-    result = (n===1)?"A-1a":"A-1b";
-  } else if(firstChoice === 1 && secondChoice === 2){
-    result = (n===1)?"A-2a":"A-2b";
-  } else if(firstChoice === 2 && secondChoice === 1){
-    result = (n===1)?"B-1a":"B-1b";
-  } else { // B-2はランダム
-    let goals = ["A-1a","A-1b","A-2a","A-2b","B-1a","B-1b","B-2c"];
-    result = goals[Math.floor(Math.random() * goals.length)];
+    
+  } else if(step === 2){
+    // 3回目（ゴール）処理
+    let result = "";
+    if(firstChoice === 1 && secondChoice === 1){
+      result = (n===1)?"A-1a":"A-1b";
+    } else if(firstChoice === 1 && secondChoice === 2){
+      result = (n===1)?"A-2a":"A-2b";
+    } else if(firstChoice === 2 && secondChoice === 1){
+      result = (n===1)?"B-1a":"B-1b";
+    } else {
+      let goals = ["A-1a","A-1b","A-2a","A-2b","B-1a","B-1b","B-2c"];
+      result = goals[Math.floor(Math.random() * goals.length)];
+    }
+    showTextThenChoices("ゴール: " + result, step, true); // 最後は選択肢なし
   }
-  showSequence(["ゴール到達！", result]);
-  document.getElementById('choices').innerHTML = ""; // 選択肢消す
 }
 
-// テキストを順番に表示（自動3秒）
-function showSequence(sequence){
-  let i = 0;
-  function nextText(){
-    if(i >= sequence.length) return;
-    document.getElementById('text-box').innerText = sequence[i];
-    i++;
-    setTimeout(nextText, 3000);
-  }
-  nextText();
+// テキスト表示後に3秒で選択肢を出す
+function showTextThenChoices(text, currentStep, final=false){
+  document.getElementById('text-box').innerText = text;
+  if(final) return; // ゴールは選択肢なし
+
+  setTimeout(()=>{
+    if(currentStep === 1){
+      if(firstChoice===1){
+        updateChoices("A-1","A-2");
+      } else {
+        updateChoices("B-1","B-2");
+      }
+    } else if(currentStep === 2){
+      updateChoices("最終選択肢1","最終選択肢2");
+    }
+  },3000);
 }
 
-// 選択肢ボタン生成
 function updateChoices(opt1,opt2){
   document.getElementById('choices').innerHTML = `
     <button class="choice-btn" onclick="choose(1)">${opt1}</button>
@@ -158,7 +151,7 @@ function updateChoices(opt1,opt2){
   `;
 }
 
-// 最初からやり直すボタン
+// やり直し
 function restart(){
   step = 0;
   firstChoice = 0;
@@ -167,6 +160,7 @@ function restart(){
   updateChoices("選択肢1","選択肢2");
 }
 </script>
+
 <button id="restart-btn" onclick="restart()">やり直す</button>
 </body>
 </html>
