@@ -76,39 +76,46 @@
 
 <script>
 let step = 0;
-let firstChoice = 0; // 1か2を記録
+let firstChoice = 0;
+let secondChoice = 0;
 
-function choose(n) {
+function choose(n){
   step++;
   
-  if(step === 1) {
-    firstChoice = n; // 最初の選択肢を記録
-    if(n === 1){
-      document.getElementById('text-box').innerText = "選択肢1（A）を選びました";
+  if(step === 1){
+    firstChoice = n;
+    document.getElementById('text-box').innerText = "1回目の選択肢を選びました";
+    updateChoices("A","B");
+    
+  } else if(step === 2){
+    secondChoice = n;
+    if(firstChoice === 1){ // Aを選んでいた場合
+      document.getElementById('text-box').innerText = "2回目の選択肢を選びました（A系）";
       updateChoices("A-1","A-2");
-    } else {
-      document.getElementById('text-box').innerText = "選択肢2（B）を選びました";
+    } else { // Bを選んでいた場合
+      document.getElementById('text-box').innerText = "2回目の選択肢を選びました（B系）";
       updateChoices("B-1","B-2");
     }
-  } else if(step === 2) {
-    if(firstChoice === 1){ // 最初にAを選んでいた場合
-      if(n === 1){
-        document.getElementById('text-box').innerText = "ゴールA-1に到達！";
-      } else {
-        document.getElementById('text-box').innerText = "ゴールA-2に到達！";
-      }
-    } else { // 最初にBを選んでいた場合
-      if(n === 1){
-        document.getElementById('text-box').innerText = "ゴールB-1に到達！";
-      } else {
-        document.getElementById('text-box').innerText = "ゴールB-2に到達！";
-      }
+    
+  } else if(step === 3){
+    let result = "";
+    if(firstChoice === 1 && secondChoice === 1){ // A-1
+      result = (n===1)?"A-1a":"A-1b";
+    } else if(firstChoice === 1 && secondChoice === 2){ // A-2
+      result = (n===1)?"A-2a":"A-2b";
+    } else if(firstChoice === 2 && secondChoice === 1){ // B-1
+      result = (n===1)?"B-1a":"B-1b";
+    } else { // B-2はランダム
+      let goals = ["A-1a","A-1b","A-2a","A-2b","B-1a","B-1b","B-2c"];
+      result = goals[Math.floor(Math.random() * goals.length)];
     }
+
+    document.getElementById('text-box').innerText = `ゴール: ${result}`;
     document.getElementById('choices').innerHTML = ""; // 選択肢を消す
   }
 }
 
-function updateChoices(opt1, opt2) {
+function updateChoices(opt1, opt2){
   document.getElementById('choices').innerHTML = `
     <button class="choice-btn" onclick="choose(1)">${opt1}</button>
     <button class="choice-btn" onclick="choose(2)">${opt2}</button>
