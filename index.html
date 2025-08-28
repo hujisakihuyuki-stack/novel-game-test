@@ -76,28 +76,33 @@
 
 <script>
 let step = 0;
+let firstChoice = 0; // 1か2を記録
 
 function choose(n) {
   step++;
+  
   if(step === 1) {
+    firstChoice = n; // 最初の選択肢を記録
     if(n === 1){
-      document.getElementById('text-box').innerText = "1回目の選択肢1を選びました";
+      document.getElementById('text-box').innerText = "選択肢1（A）を選びました";
+      updateChoices("A-1","A-2");
     } else {
-      document.getElementById('text-box').innerText = "1回目の選択肢2を選びました";
+      document.getElementById('text-box').innerText = "選択肢2（B）を選びました";
+      updateChoices("B-1","B-2");
     }
-    updateChoices("次の選択肢1","次の選択肢2");
   } else if(step === 2) {
-    if(n === 1){
-      document.getElementById('text-box').innerText = "2回目の選択肢1を選びました";
-    } else {
-      document.getElementById('text-box').innerText = "2回目の選択肢2を選びました";
-    }
-    updateChoices("次の選択肢1","次の選択肢2");
-  } else if(step === 3) {
-    if(n === 1){
-      document.getElementById('text-box').innerText = "3回目の選択肢1を選びました";
-    } else {
-      document.getElementById('text-box').innerText = "3回目の選択肢2を選びました";
+    if(firstChoice === 1){ // 最初にAを選んでいた場合
+      if(n === 1){
+        document.getElementById('text-box').innerText = "ゴールA-1に到達！";
+      } else {
+        document.getElementById('text-box').innerText = "ゴールA-2に到達！";
+      }
+    } else { // 最初にBを選んでいた場合
+      if(n === 1){
+        document.getElementById('text-box').innerText = "ゴールB-1に到達！";
+      } else {
+        document.getElementById('text-box').innerText = "ゴールB-2に到達！";
+      }
     }
     document.getElementById('choices').innerHTML = ""; // 選択肢を消す
   }
@@ -110,6 +115,7 @@ function updateChoices(opt1, opt2) {
   `;
 }
 </script>
+
 
 </body>
 </html>
