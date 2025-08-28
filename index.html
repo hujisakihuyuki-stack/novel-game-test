@@ -75,13 +75,41 @@
 </div>
 
 <script>
+let step = 0;
+
 function choose(n) {
-  if(n === 1){
-    document.getElementById('text-box').innerText = "選択肢1を選びました！";
-  } else {
-    document.getElementById('text-box').innerText = "選択肢2を選びました！";
+  step++;
+  if(step === 1) {
+    if(n === 1){
+      document.getElementById('text-box').innerText = "1回目の選択肢1を選びました";
+    } else {
+      document.getElementById('text-box').innerText = "1回目の選択肢2を選びました";
+    }
+    updateChoices("次の選択肢1","次の選択肢2");
+  } else if(step === 2) {
+    if(n === 1){
+      document.getElementById('text-box').innerText = "2回目の選択肢1を選びました";
+    } else {
+      document.getElementById('text-box').innerText = "2回目の選択肢2を選びました";
+    }
+    updateChoices("次の選択肢1","次の選択肢2");
+  } else if(step === 3) {
+    if(n === 1){
+      document.getElementById('text-box').innerText = "3回目の選択肢1を選びました";
+    } else {
+      document.getElementById('text-box').innerText = "3回目の選択肢2を選びました";
+    }
+    document.getElementById('choices').innerHTML = ""; // 選択肢を消す
   }
 }
+
+function updateChoices(opt1, opt2) {
+  document.getElementById('choices').innerHTML = `
+    <button class="choice-btn" onclick="choose(1)">${opt1}</button>
+    <button class="choice-btn" onclick="choose(2)">${opt2}</button>
+  `;
+}
 </script>
+
 </body>
 </html>
